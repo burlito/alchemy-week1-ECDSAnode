@@ -35,9 +35,8 @@ function hexToSignature(hex_signature) {
     const r = BigInt('0x' + h_signature.slice(0, 64))
     const s = BigInt('0x' + h_signature.slice(64, 128))
     const recovery = parseInt(h_signature.slice(128), 16)
-
-    return new secp256k1.Signature(r, s, 1);
-    //return secp256k1.Signature.fromCompact(h_signature)
+    
+    return new secp256k1.Signature(r, s, recovery - 27);
 }
 
 function hashForSign(message) {

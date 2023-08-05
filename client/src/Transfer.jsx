@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { hexToBytes, toHex, utf8ToBytes } from "ethereum-cryptography/utils.js"
+import { getRandomBytesSync } from "ethereum-cryptography/random.js";
 import { prepend_0x, strip_0x } from './utils'
 import server from "./server";
 
@@ -52,23 +53,21 @@ async function get_wallet_permission(address, eth = window.ethereum) {
 }
 
 function Transfer({ address, setBalance }) {
+	const [nounce, setNounce] = useState(toHex(getRandomBytesSync(4)));
 	const [sendAmount, setSendAmount] = useState("");
 	const [recipient, setRecipient] = useState("");
 
 	const setValue = (setter) => (evt) => setter(evt.target.value);
 
 
-
-
 	async function transfer(evt) {
 		evt.preventDefault();
-		const top_hash_resp = await server.get(`top_hash`);
-		const top_hash = top_hash_resp.data;
-		const message = {
+		//const nounce = toHex(await getRandomBytes(4));
+		const message =  {
 			"action": "send",
 			"recipient": strip_0x(recipient),
 			"amount": Number(sendAmount),
-			"top_hash": top_hash
+			"nounce": nounce
 		};
 		const message_str = JSON.stringify(message, null, '\t');
 		const message_hex = toHex(utf8ToBytes(message_str))
@@ -101,6 +100,8 @@ function Transfer({ address, setBalance }) {
 			alert(e.response.data.message);
 		}
 
+		setNounce(toHex(getRandomBytesSync(4)));
+
 		return true;
 	}
 
@@ -127,6 +128,13 @@ function Transfer({ address, setBalance }) {
 			</label>
 
 			<input type="submit" className="button" value="Transfer" />
+			<label>
+			Nounce
+			<input 
+				value={nounce}
+				onChange={setValue(setNounce)}
+			/>
+			</label>
 		</form>
 	);
 }
