@@ -1,4 +1,5 @@
 import server from "./server";
+import { strip_0x } from "./utils"
 
 function Wallet({ address, setAddress, balance, setBalance }) {
   async function onChange(evt) {
@@ -7,7 +8,7 @@ function Wallet({ address, setAddress, balance, setBalance }) {
     if (address) {
       const {
         data: { balance },
-      } = await server.get(`balance/${address}`);
+      } = await server.get(`balance/${strip_0x(address)}`);
       setBalance(balance);
     } else {
       setBalance(0);

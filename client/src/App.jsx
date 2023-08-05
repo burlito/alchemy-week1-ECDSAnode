@@ -1,4 +1,5 @@
 import Wallet from "./Wallet";
+import WalletList from "./WalletList";
 import Transfer from "./Transfer";
 import "./App.scss";
 import { useState } from "react";
@@ -9,6 +10,7 @@ function App() {
 
   return (
     <div className="app">
+      <WalletList />
       <Wallet
         balance={balance}
         setBalance={setBalance}
